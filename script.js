@@ -413,11 +413,22 @@ document.addEventListener('DOMContentLoaded', () => {
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             container.appendChild(renderer.domElement);
 
-            const sphere = new THREE.Mesh(
-                new THREE.IcosahedronGeometry(1.5, 0),
-                new THREE.MeshStandardMaterial({ color: 0x5eead4, wireframe: true, metalness: 0.8 })
+            // Wireframe sphere – rendered as LineSegments for sharp look + raycasting works
+            const sphereGeo = new THREE.IcosahedronGeometry(1.5, 1);
+            const sphereWireGeo = new THREE.WireframeGeometry(sphereGeo);
+            const sphereMat = new THREE.LineBasicMaterial({
+                color: 0x5eead4,
+                transparent: true,
+                opacity: 0.85,
+            });
+            const sphere = new THREE.LineSegments(sphereWireGeo, sphereMat);
+            // Keep a mesh behind for raycasting (invisible)
+            const sphereHitMesh = new THREE.Mesh(
+                new THREE.IcosahedronGeometry(1.5, 1),
+                new THREE.MeshBasicMaterial({ visible: false })
             );
             scene.add(sphere);
+            scene.add(sphereHitMesh);
 
             // Breakable Background Star Particles
             const starsCount = 2000;
@@ -450,70 +461,107 @@ document.addEventListener('DOMContentLoaded', () => {
             camera.position.z = 5;
 
             // Interaction Logic - COLLAPSE & RECOLOR Physics
-            let mouse = new THREE.Vector2(-100, -100);
             const raycaster = new THREE.Raycaster();
-            let lastClickTime = 0;
-            const wireframeColors = [0x5eead4, 0xec4899, 0xa855f7, 0x3b82f6, 0xfacc15];
+            raycaster.params.Line = { threshold: 0.1 };
+            let lastTapTime = 0;
+            const wireframeColors = [
+                new THREE.Color(0x2dd4bf), // mint
+                new THREE.Color(0xec4899), // pink
+                new THREE.Color(0xa855f7), // purple
+                new THREE.Color(0x3b82f6), // blue
+                new THREE.Color(0xfacc15), // gold
+                new THREE.Color(0xf97316), // orange
+            ];
             let currentColorIdx = 0;
 
-            const onInteraction = (x, y, isClick = false) => {
-                mouse.x = (x / window.innerWidth) * 2 - 1;
-                mouse.y = -(y / window.innerHeight) * 2 + 1;
+            const cycleColor = () => {
+                currentColorIdx = (currentColorIdx + 1) % wireframeColors.length;
+                const c = wireframeColors[currentColorIdx];
+                gsap.to(sphere.material.color, {
+                    r: c.r, g: c.g, b: c.b,
+                    duration: 0.5,
+                    ease: 'power2.out'
+                });
+                // Pulse glow: opacity flash
+                gsap.fromTo(sphere.material, { opacity: 1 }, {
+                    opacity: 0.2, duration: 0.15, yoyo: true, repeat: 1,
+                    onComplete: () => { sphere.material.opacity = 0.85; }
+                });
+            };
 
-                raycaster.setFromCamera(mouse, camera);
+            const collapseSphere = () => {
+                gsap.to([sphere.scale, sphereHitMesh.scale], {
+                    x: 0.03, y: 0.03, z: 0.03,
+                    duration: 0.25,
+                    ease: 'power4.in',
+                    onComplete: () => {
+                        gsap.to([sphere.scale, sphereHitMesh.scale], {
+                            x: 1, y: 1, z: 1,
+                            duration: 1.8,
+                            ease: 'elastic.out(1, 0.25)'
+                        });
+                    }
+                });
+            };
 
-                // 1. Ray-Particle Physics
-                const intersectsRay = raycaster.ray;
+            const onTap = (x, y) => {
+                const mx = (x / window.innerWidth) * 2 - 1;
+                const my = -(y / window.innerHeight) * 2 + 1;
+                raycaster.setFromCamera(new THREE.Vector2(mx, my), camera);
+
+                // Particle collapse physics
+                const ray = raycaster.ray;
                 const posAttr = starsGeo.attributes.position;
                 for (let i = 0; i < starsCount; i++) {
                     const pVec = new THREE.Vector3(posAttr.getX(i), posAttr.getY(i), posAttr.getZ(i));
-                    const dist = intersectsRay.distanceToPoint(pVec);
-
-                    if (dist < 2.0) {
-                        const dir = intersectsRay.origin.clone().sub(pVec).normalize();
+                    if (ray.distanceToPoint(pVec) < 2.0) {
+                        const dir = ray.origin.clone().sub(pVec).normalize();
                         velocities[i * 3] += dir.x * 0.8;
                         velocities[i * 3 + 1] += dir.y * 0.8;
                         velocities[i * 3 + 2] += dir.z * 0.8;
                     }
                 }
 
-                // 2. Wireframe Interaction (Hit Detection)
-                if (isClick && sphere) {
-                    const intersects = raycaster.intersectObject(sphere);
-                    if (intersects.length > 0) {
-                        const now = Date.now();
-                        const timeDiff = now - lastClickTime;
-
-                        if (timeDiff < 300) {
-                            // DOUBLE TAP: COLLAPSE
-                            gsap.to(sphere.scale, {
-                                x: 0.05, y: 0.05, z: 0.05,
-                                duration: 0.3,
-                                ease: "power4.in",
-                                onComplete: () => {
-                                    gsap.to(sphere.scale, { x: 1, y: 1, z: 1, duration: 1.5, ease: "elastic.out(1, 0.3)" });
-                                }
-                            });
-                        } else {
-                            // SINGLE TAP: CHANGE COLOR
-                            currentColorIdx = (currentColorIdx + 1) % wireframeColors.length;
-                            const nextColor = new THREE.Color(wireframeColors[currentColorIdx]);
-                            gsap.to(sphere.material.color, {
-                                r: nextColor.r,
-                                g: nextColor.g,
-                                b: nextColor.b,
-                                duration: 0.6,
-                                ease: "power2.out"
-                            });
-                        }
-                        lastClickTime = now;
+                // Wireframe hit detection
+                const hits = raycaster.intersectObject(sphereHitMesh);
+                if (hits.length > 0) {
+                    const now = Date.now();
+                    if (now - lastTapTime < 350) {
+                        collapseSphere();
+                    } else {
+                        cycleColor();
                     }
+                    lastTapTime = now;
                 }
             };
 
-            window.addEventListener('mousedown', (e) => onInteraction(e.clientX, e.clientY, true));
-            window.addEventListener('touchstart', (e) => onInteraction(e.touches[0].clientX, e.touches[0].clientY, true));
-            window.addEventListener('mousemove', (e) => onInteraction(e.clientX, e.clientY, false));
+            const onMove = (x, y) => {
+                const mx = (x / window.innerWidth) * 2 - 1;
+                const my = -(y / window.innerHeight) * 2 + 1;
+                raycaster.setFromCamera(new THREE.Vector2(mx, my), camera);
+                const ray = raycaster.ray;
+                const posAttr = starsGeo.attributes.position;
+                for (let i = 0; i < starsCount; i++) {
+                    const pVec = new THREE.Vector3(posAttr.getX(i), posAttr.getY(i), posAttr.getZ(i));
+                    if (ray.distanceToPoint(pVec) < 1.5) {
+                        const dir = ray.origin.clone().sub(pVec).normalize();
+                        velocities[i * 3] += dir.x * 0.15;
+                        velocities[i * 3 + 1] += dir.y * 0.15;
+                        velocities[i * 3 + 2] += dir.z * 0.15;
+                    }
+                }
+
+                // Hover: highlight wireframe
+                const hits = raycaster.intersectObject(sphereHitMesh);
+                document.body.style.cursor = hits.length > 0 ? 'pointer' : 'default';
+            };
+
+            window.addEventListener('mousedown', (e) => onTap(e.clientX, e.clientY));
+            window.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                onTap(e.touches[0].clientX, e.touches[0].clientY);
+            }, { passive: false });
+            window.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
 
             // Background Speed & Reactive Logic
             const bgConfig = { speedMultiplier: 1.0 };
@@ -531,6 +579,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 sphere.rotation.y += 0.005 + (avgFreq / 5000);
                 sphere.rotation.x += 0.002;
+                sphereHitMesh.rotation.copy(sphere.rotation);
+                sphereHitMesh.scale.copy(sphere.scale);
 
                 const driftSpeed = 0.01 * bgConfig.speedMultiplier;
 
