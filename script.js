@@ -803,7 +803,78 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let drag = false, px = 0, py = 0, targetX = 0, targetY = 0, currentX = 0, currentY = 0;
             let zoom = 25, targetZoom = 25;
+            let lastGallTap = 0;
 
+            // Raycaster for click detection on 3D objects
+            const gallRaycaster = new THREE.Raycaster();
+            const gallMouse = new THREE.Vector2();
+
+            // Neon color palettes for gallery wireframes
+            const gallColors = [
+                { core: new THREE.Color(0x5eead4), outer: new THREE.Color(0x2dd4bf) }, // mint
+                { core: new THREE.Color(0xec4899), outer: new THREE.Color(0xf472b6) }, // pink
+                { core: new THREE.Color(0xa855f7), outer: new THREE.Color(0xd946ef) }, // purple
+                { core: new THREE.Color(0x3b82f6), outer: new THREE.Color(0x60a5fa) }, // blue
+                { core: new THREE.Color(0xfacc15), outer: new THREE.Color(0xfde68a) }, // gold
+                { core: new THREE.Color(0xf97316), outer: new THREE.Color(0xfb923c) }, // orange
+            ];
+            let gallColorIdx = 0;
+
+            const cycleGallColor = () => {
+                gallColorIdx = (gallColorIdx + 1) % gallColors.length;
+                const c = gallColors[gallColorIdx];
+                // Animate both wireframe colors with GSAP
+                gsap.to(innerMat.color, { r: c.core.r, g: c.core.g, b: c.core.b, duration: 0.5, ease: 'power2.out' });
+                gsap.to(outerMat.color, { r: c.outer.r, g: c.outer.g, b: c.outer.b, duration: 0.5, ease: 'power2.out' });
+                gsap.to(ringMat.color, { r: c.core.r, g: c.core.g, b: c.core.b, duration: 0.5 });
+                // Flash pulse
+                gsap.fromTo(innerMat, { opacity: 0.8 }, {
+                    opacity: 0.0, duration: 0.12, yoyo: true, repeat: 1,
+                    onComplete: () => { innerMat.opacity = 0.8; }
+                });
+                gsap.fromTo(outerMat, { opacity: 0.3 }, {
+                    opacity: 0.0, duration: 0.12, yoyo: true, repeat: 1,
+                    onComplete: () => { outerMat.opacity = 0.3; }
+                });
+            };
+
+            const collapseGallery = () => {
+                gsap.to(coreGroup.scale, {
+                    x: 0.02, y: 0.02, z: 0.02,
+                    duration: 0.3,
+                    ease: 'power4.in',
+                    onComplete: () => {
+                        gsap.to(coreGroup.scale, {
+                            x: 1, y: 1, z: 1,
+                            duration: 2.0,
+                            ease: 'elastic.out(1, 0.2)'
+                        });
+                    }
+                });
+            };
+
+            const getGallHits = (clientX, clientY) => {
+                const rect = gall.getBoundingClientRect();
+                gallMouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+                gallMouse.y = ((clientY - rect.top) / rect.height) * -2 + 1;
+                gallRaycaster.setFromCamera(gallMouse, camera);
+                return gallRaycaster.intersectObjects([innerCore, outerShell, ring], false);
+            };
+
+            const onGallTap = (clientX, clientY) => {
+                const hits = getGallHits(clientX, clientY);
+                if (hits.length > 0) {
+                    const now = Date.now();
+                    if (now - lastGallTap < 350) {
+                        collapseGallery();
+                    } else {
+                        cycleGallColor();
+                    }
+                    lastGallTap = now;
+                }
+            };
+
+            // Mouse drag + cursor change on hover
             gall.addEventListener('mousedown', (e) => { drag = true; px = e.clientX; py = e.clientY; });
             window.addEventListener('mouseup', () => drag = false);
             window.addEventListener('mousemove', (e) => {
@@ -811,25 +882,36 @@ document.addEventListener('DOMContentLoaded', () => {
                     targetX += (e.clientX - px) * 0.005;
                     targetY += (e.clientY - py) * 0.005;
                     px = e.clientX; py = e.clientY;
+                } else {
+                    // Hover cursor
+                    const hits = getGallHits(e.clientX, e.clientY);
+                    gall.style.cursor = hits.length > 0 ? 'pointer' : 'grab';
                 }
             });
+            gall.addEventListener('click', (e) => onGallTap(e.clientX, e.clientY));
 
-            // Touch Support
+            // Touch support
+            let touchStartX = 0, touchStartY = 0, touchMoved = false;
             gall.addEventListener('touchstart', (e) => {
                 drag = true;
-                px = e.touches[0].clientX;
-                py = e.touches[0].clientY;
-            }, { passive: false });
-            window.addEventListener('touchend', () => drag = false);
+                touchMoved = false;
+                touchStartX = px = e.touches[0].clientX;
+                touchStartY = py = e.touches[0].clientY;
+            }, { passive: true });
+            window.addEventListener('touchend', (e) => {
+                drag = false;
+                // If finger barely moved, treat as a tap
+                if (!touchMoved) onGallTap(touchStartX, touchStartY);
+            });
             window.addEventListener('touchmove', (e) => {
                 if (drag) {
-                    e.preventDefault();
+                    touchMoved = true;
                     targetX += (e.touches[0].clientX - px) * 0.008;
                     targetY += (e.touches[0].clientY - py) * 0.008;
                     px = e.touches[0].clientX;
                     py = e.touches[0].clientY;
                 }
-            }, { passive: false });
+            }, { passive: true });
 
             gall.addEventListener('wheel', (e) => {
                 e.preventDefault();
@@ -867,6 +949,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Gallery 3D failed:", e);
         }
     };
+
 
     // --- 5. Professional Smooth Scroll ---
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
