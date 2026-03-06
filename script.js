@@ -2,6 +2,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Portfolio Logic Initializing...");
 
+    // Core Global Elements
+    const audio = document.getElementById('intro-audio');
+    const clickSound = document.getElementById('click-sound');
+    const audioBtn = document.getElementById('audio-toggle');
+    const unmutedIcon = audioBtn?.querySelector('.unmuted');
+    const mutedIcon = audioBtn?.querySelector('.muted');
+    const launchBtn = document.getElementById('launch-btn');
+    const loader = document.getElementById('loader');
+
     // Helper: Create a glowing circular texture for space particles
     const createParticleTexture = () => {
         const canvas = document.createElement('canvas');
@@ -19,6 +28,39 @@ document.addEventListener('DOMContentLoaded', () => {
         return texture;
     };
     const spaceTexture = createParticleTexture();
+
+    // --- Audio Audio Analysis Setup (For Reactivity) ---
+    let audioContext, analyser, dataArray;
+    const initAudioAnalysis = (audioElement) => {
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            const source = audioContext.createMediaElementSource(audioElement);
+            source.connect(analyser);
+            analyser.connect(audioContext.destination);
+            analyser.fftSize = 256;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+        }
+    };
+
+    // --- Typewriter Effect ---
+    const typewriterElement = document.getElementById('typewriter');
+    if (typewriterElement) {
+        const words = ["Future Educator.", "Digital Creator.", "Lifelong Learner.", "Technology Enthusiast."];
+        let wordIdx = 0, charIdx = 0, isDeleting = false;
+        const type = () => {
+            const currentWord = words[wordIdx];
+            if (isDeleting) {
+                typewriterElement.textContent = currentWord.substring(0, charIdx--);
+                if (charIdx < 0) { isDeleting = false; wordIdx = (wordIdx + 1) % words.length; }
+            } else {
+                typewriterElement.textContent = currentWord.substring(0, charIdx++);
+                if (charIdx > currentWord.length) isDeleting = true;
+            }
+            setTimeout(type, isDeleting ? 100 : 200);
+        };
+        type();
+    }
     const initIntro = () => {
         const introContainer = document.getElementById('intro-3d');
         if (!introContainer) return;
@@ -100,10 +142,20 @@ document.addEventListener('DOMContentLoaded', () => {
         let frameCount = 0;
         const animateIntro = () => {
             const req = requestAnimationFrame(animateIntro);
-            if (frameCount % 60 === 0) console.log("Intro rendering frame:", frameCount);
             frameCount++;
 
-            particlesMesh.rotation.z += 0.002;
+            // Audio Analysis Reactive Logic
+            let avgFreq = 0;
+            if (analyser && dataArray) {
+                analyser.getByteFrequencyData(dataArray);
+                let sum = 0;
+                for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+                avgFreq = sum / dataArray.length;
+            }
+
+            const scale = 1 + (avgFreq / 255) * 0.5;
+            particlesMesh.scale.set(scale, scale, scale);
+            particlesMesh.rotation.z += 0.002 + (avgFreq / 2000);
             particlesMesh.position.z += speed;
 
             const posAttr = particlesGeo.attributes.position;
@@ -141,10 +193,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 1. Loader Logic (Always executes first) ---
     const hideLoader = () => {
-        const loader = document.getElementById('loader');
         const spinner = document.querySelector('.loader-circle');
         const loaderUI = document.querySelector('.loader-ui');
-        const audio = document.getElementById('intro-audio');
 
         if (loader) {
             console.log("3D Loaded. Animating UI...");
@@ -162,17 +212,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (loaderUI) loaderUI.classList.add('visible');
             }
 
-            // The reveal now only happens on BUTTON CLICK
-            const launchBtn = document.getElementById('launch-btn');
+            // Handle Launch Sequence
             launchBtn?.addEventListener('click', () => {
                 console.log("Launching Experience...");
 
-                // Play Audio (User interaction allows this)
+                // Audio Initialization
                 if (audio) {
-                    audio.play().catch(e => console.log("Audio play blocked:", e));
+                    // Check if audio file exists, otherwise use fallback
+                    audio.addEventListener('error', () => {
+                        console.warn("Local music file not found, using fallback.");
+                        audio.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+                        audio.play().catch(e => console.log("Fallback failed:", e));
+                    }, { once: true });
+
+                    audio.play().then(() => {
+                        initAudioAnalysis(audio);
+                    }).catch(e => {
+                        console.log("Audio play blocked, but initializing context.");
+                        initAudioAnalysis(audio);
+                    });
                 }
 
                 // Cinematic Fade
+                sessionStorage.setItem('introPlayed', 'true');
                 if (typeof gsap !== 'undefined') {
                     gsap.to(loader, {
                         opacity: 0,
@@ -180,7 +242,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         ease: "power2.inOut",
                         onComplete: () => {
                             loader.style.display = 'none';
-                            // Stop intro animation
                             const intro3d = document.getElementById('intro-3d');
                             if (intro3d && intro3d.dataset.reqId) {
                                 cancelAnimationFrame(parseInt(intro3d.dataset.reqId));
@@ -208,12 +269,13 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('theme', newTheme);
     });
 
-    // --- Audio Control Logic ---
-    const audioBtn = document.getElementById('audio-toggle');
-    const audio = document.getElementById('intro-audio');
-    const clickSound = document.getElementById('click-sound');
-    const unmutedIcon = audioBtn?.querySelector('.unmuted');
-    const mutedIcon = audioBtn?.querySelector('.muted');
+    // Handle click sound fallbacks
+    if (clickSound) {
+        clickSound.addEventListener('error', () => {
+            console.warn("Local click sound not found, using CDN fallback.");
+            clickSound.src = "https://www.soundjay.com/buttons/sounds/button-16.mp3";
+        }, { once: true });
+    }
 
     const playClick = () => {
         if (clickSound) {
@@ -222,31 +284,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Attempt Autoplay/Resume on first interaction
-    const startAudio = () => {
-        if (audio) {
-            audio.play().then(() => {
-                console.log("Audio started successfully");
-                document.removeEventListener('click', startAudio);
-                document.removeEventListener('touchstart', startAudio);
-            }).catch(e => {
-                console.log("Initial audio block, waiting for next interaction...", e);
-            });
-        }
-    };
-    document.addEventListener('click', startAudio);
-    document.addEventListener('touchstart', startAudio);
-
     // Global Click Sound for Interactive Elements
     const setupClickSounds = () => {
-        document.querySelectorAll('a, button, .control-btn, .contact-item-card, .work-card, #intro-3d, #canvas-container').forEach(el => {
+        const interactiveElements = 'a, button, .control-btn, .contact-item-card, .work-card, #intro-3d, #canvas-container, .fab-btn, .fab-item, .profile-img';
+        document.querySelectorAll(interactiveElements).forEach(el => {
             el.addEventListener('mousedown', playClick);
             el.addEventListener('touchstart', playClick);
         });
     };
     setupClickSounds();
 
-    audioBtn?.addEventListener('click', () => {
+    audioBtn?.addEventListener('click', (e) => {
+        e.stopPropagation(); // Avoid triggering other listeners
         if (audio) {
             audio.muted = !audio.muted;
             unmutedIcon?.classList.toggle('hide');
@@ -254,11 +303,79 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+
     const menuToggle = document.getElementById('menu-toggle');
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.addEventListener('click', () => {
             if (menuToggle) menuToggle.checked = false;
         });
+    });
+
+    // --- 3D Hover Tilt Effect ---
+    const applyTilt = () => {
+        document.querySelectorAll('.work-card, .value-card, .tool-item, .profile-frame').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const xc = rect.width / 2;
+                const yc = rect.height / 2;
+                const dx = x - xc;
+                const dy = y - yc;
+                gsap.to(card, {
+                    rotationY: dx / 15,
+                    rotationX: -dy / 15,
+                    transformPerspective: 1000,
+                    ease: "power2.out",
+                    duration: 0.5
+                });
+            });
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, { rotationY: 0, rotationX: 0, duration: 0.5 });
+            });
+        });
+    };
+    applyTilt();
+
+    // --- Image Lightbox ---
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxClose = document.querySelector('.lightbox-close');
+
+    document.querySelectorAll('.work-card img, .profile-img').forEach(img => {
+        img.style.cursor = 'zoom-in';
+        img.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (lightbox && lightboxImg) {
+                lightboxImg.src = img.src;
+                lightbox.classList.add('active');
+                gsap.fromTo(lightboxImg, { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.7)" });
+            }
+        });
+    });
+
+    lightboxClose?.addEventListener('click', () => {
+        lightbox.classList.remove('active');
+    });
+
+    // --- Cinematic Portal Transitions ---
+    document.querySelectorAll('a').forEach(link => {
+        if (link.hostname === window.location.hostname && !link.hash) {
+            link.addEventListener('click', (e) => {
+                const target = link.href;
+                if (target !== window.location.href) {
+                    e.preventDefault();
+                    // Accelerate particles effect
+                    if (window.backgroundParticles) window.backgroundParticles.speedMultiplier = 10;
+                    gsap.to('body', {
+                        opacity: 0,
+                        scale: 1.1,
+                        duration: 0.8,
+                        onComplete: () => { window.location.href = target; }
+                    });
+                }
+            });
+        }
     });
 
     // --- 3. Custom Cursor (Desktop Only) ---
@@ -332,37 +449,90 @@ document.addEventListener('DOMContentLoaded', () => {
             scene.add(new THREE.AmbientLight(0xffffff, 1));
             camera.position.z = 5;
 
-            // Interaction Logic - COLLAPSE Physics
+            // Interaction Logic - COLLAPSE & RECOLOR Physics
             let mouse = new THREE.Vector2(-100, -100);
             const raycaster = new THREE.Raycaster();
+            let lastClickTime = 0;
+            const wireframeColors = [0x5eead4, 0xec4899, 0xa855f7, 0x3b82f6, 0xfacc15];
+            let currentColorIdx = 0;
 
-            const onInteraction = (x, y) => {
+            const onInteraction = (x, y, isClick = false) => {
                 mouse.x = (x / window.innerWidth) * 2 - 1;
                 mouse.y = -(y / window.innerHeight) * 2 + 1;
 
                 raycaster.setFromCamera(mouse, camera);
-                const intersects = raycaster.ray;
 
+                // 1. Ray-Particle Physics
+                const intersectsRay = raycaster.ray;
                 const posAttr = starsGeo.attributes.position;
                 for (let i = 0; i < starsCount; i++) {
                     const pVec = new THREE.Vector3(posAttr.getX(i), posAttr.getY(i), posAttr.getZ(i));
-                    const dist = intersects.distanceToPoint(pVec);
+                    const dist = intersectsRay.distanceToPoint(pVec);
 
                     if (dist < 2.0) {
-                        const dir = intersects.origin.clone().sub(pVec).normalize(); // Pull TOWARD touch
+                        const dir = intersectsRay.origin.clone().sub(pVec).normalize();
                         velocities[i * 3] += dir.x * 0.8;
                         velocities[i * 3 + 1] += dir.y * 0.8;
                         velocities[i * 3 + 2] += dir.z * 0.8;
                     }
                 }
+
+                // 2. Wireframe Interaction (Hit Detection)
+                if (isClick && sphere) {
+                    const intersects = raycaster.intersectObject(sphere);
+                    if (intersects.length > 0) {
+                        const now = Date.now();
+                        const timeDiff = now - lastClickTime;
+
+                        if (timeDiff < 300) {
+                            // DOUBLE TAP: COLLAPSE
+                            gsap.to(sphere.scale, {
+                                x: 0.05, y: 0.05, z: 0.05,
+                                duration: 0.3,
+                                ease: "power4.in",
+                                onComplete: () => {
+                                    gsap.to(sphere.scale, { x: 1, y: 1, z: 1, duration: 1.5, ease: "elastic.out(1, 0.3)" });
+                                }
+                            });
+                        } else {
+                            // SINGLE TAP: CHANGE COLOR
+                            currentColorIdx = (currentColorIdx + 1) % wireframeColors.length;
+                            const nextColor = new THREE.Color(wireframeColors[currentColorIdx]);
+                            gsap.to(sphere.material.color, {
+                                r: nextColor.r,
+                                g: nextColor.g,
+                                b: nextColor.b,
+                                duration: 0.6,
+                                ease: "power2.out"
+                            });
+                        }
+                        lastClickTime = now;
+                    }
+                }
             };
 
-            window.addEventListener('mousedown', (e) => onInteraction(e.clientX, e.clientY));
-            window.addEventListener('touchstart', (e) => onInteraction(e.touches[0].clientX, e.touches[0].clientY));
+            window.addEventListener('mousedown', (e) => onInteraction(e.clientX, e.clientY, true));
+            window.addEventListener('touchstart', (e) => onInteraction(e.touches[0].clientX, e.touches[0].clientY, true));
+            window.addEventListener('mousemove', (e) => onInteraction(e.clientX, e.clientY, false));
+
+            // Background Speed & Reactive Logic
+            const bgConfig = { speedMultiplier: 1.0 };
+            window.backgroundParticles = bgConfig;
 
             const animate = () => {
-                sphere.rotation.y += 0.005;
+                // Audio Analysis Reactive Logic
+                let avgFreq = 0;
+                if (analyser && dataArray) {
+                    analyser.getByteFrequencyData(dataArray);
+                    let sum = 0;
+                    for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+                    avgFreq = sum / dataArray.length;
+                }
+
+                sphere.rotation.y += 0.005 + (avgFreq / 5000);
                 sphere.rotation.x += 0.002;
+
+                const driftSpeed = 0.01 * bgConfig.speedMultiplier;
 
                 const posAttr = starsGeo.attributes.position;
                 for (let i = 0; i < starsCount; i++) {
@@ -370,10 +540,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     let vy = velocities[i * 3 + 1];
                     let vz = velocities[i * 3 + 2];
 
-                    // Move particles
+                    // Move particles + Transition speed
                     posAttr.setX(i, posAttr.getX(i) + vx);
                     posAttr.setY(i, posAttr.getY(i) + vy);
-                    posAttr.setZ(i, posAttr.getZ(i) + vz);
+                    posAttr.setZ(i, posAttr.getZ(i) + vz + (bgConfig.speedMultiplier - 1) * 0.1);
 
                     // Friction & Return force
                     velocities[i * 3] *= 0.95;
@@ -384,9 +554,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     const oy = originalPos[i * 3 + 1];
                     const oz = originalPos[i * 3 + 2];
 
-                    posAttr.setX(i, posAttr.getX(i) + (ox - posAttr.getX(i)) * 0.01);
-                    posAttr.setY(i, posAttr.getY(i) + (oy - posAttr.getY(i)) * 0.01);
-                    posAttr.setZ(i, posAttr.getZ(i) + (oz - posAttr.getZ(i)) * 0.01);
+                    posAttr.setX(i, posAttr.getX(i) + (ox - posAttr.getX(i)) * driftSpeed);
+                    posAttr.setY(i, posAttr.getY(i) + (oy - posAttr.getY(i)) * driftSpeed);
+                    posAttr.setZ(i, posAttr.getZ(i) + (oz - posAttr.getZ(i)) * driftSpeed);
+
+                    // Reset if too far away during transition
+                    if (posAttr.getZ(i) > 20) posAttr.setZ(i, -20);
                 }
                 posAttr.needsUpdate = true;
 
@@ -553,14 +726,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- 6. Execution & Final Reveal ---
-    // Start the 3D Scenes
-    initIntro();
-    initBackground();
-    initGallery();
+    // --- 5. Professional Smooth Scroll ---
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === "#") return;
+            const target = document.querySelector(targetId);
+            if (target) {
+                const headerOffset = 100;
+                const elementPosition = target.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
-    // Cinematic Reveal after a short delay (Allows intro to play)
-    setTimeout(hideLoader, 1500);
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
+            }
+        });
+    });
+
+    // --- 6. Execution & Final Reveal ---
+    const hasIntroPlayed = sessionStorage.getItem('introPlayed');
+
+    if (hasIntroPlayed) {
+        // Skip intro, hide loader instantly
+        if (loader) loader.style.display = 'none';
+        initBackground();
+        initGallery();
+        // Try to start audio automatically (works on navigation usually)
+        if (audio) {
+            audio.play().then(() => initAudioAnalysis(audio)).catch(() => { });
+        }
+    } else {
+        // Run full sequence
+        initIntro();
+        initBackground();
+        initGallery();
+        setTimeout(hideLoader, 1500);
+    }
 
     // Reveal on Scroll Observer
     const obs = new IntersectionObserver((entries) => {
