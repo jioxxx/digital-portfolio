@@ -1354,15 +1354,16 @@ footer {
 }
 
 /* ================================================
-   RESPONSIVE – Nav overflow for many items (tablet+)
+   RESPONSIVE – Unified Clean System
    ================================================ */
-@media (max-width: 1024px) {
 
-    /* Show hamburger earlier on tablets with many nav items */
+/* Tablet breakpoint – hamburger triggers earlier for wide nav */
+@media (max-width: 1024px) {
     .menu-icon {
         display: block;
     }
 
+    /* Keep nav hidden off-screen on tablet */
     .nav-links {
         position: fixed;
         right: -100%;
@@ -1374,8 +1375,8 @@ footer {
         -webkit-backdrop-filter: blur(25px);
         width: 300px;
         height: 100vh;
-        padding: 2rem;
-        gap: 1.5rem;
+        padding: 2rem 2rem 2rem 3rem;
+        gap: 1.2rem;
         transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         border-left: 1px solid var(--glass-border);
         z-index: 999;
@@ -1393,8 +1394,10 @@ footer {
         padding: 10px 0;
         display: block;
         border-bottom: 1px solid var(--glass-border);
+        white-space: normal;
     }
 
+    /* Timeline tweaks */
     .timeline-item {
         margin-left: 40px;
     }
@@ -1408,10 +1411,183 @@ footer {
     }
 }
 
+/* Mid tablet */
+@media (max-width: 992px) {
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+        text-align: center;
+    }
+
+    .about-text-card {
+        padding: 2rem;
+    }
+
+    .hero-visual {
+        justify-content: center;
+        margin-top: 3rem;
+    }
+
+    .container {
+        padding: 0 1.5rem;
+    }
+}
+
+/* Mobile – full-screen nav, single-column layout */
 @media (max-width: 768px) {
+
+    /* Full-screen nav overlay on phone */
+    .nav-links {
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        padding: 2rem;
+        border-left: none;
+    }
+
+    .nav-links li a {
+        font-size: 1.1rem;
+        text-align: center;
+        border-bottom: 1px solid var(--glass-border);
+        padding: 12px 0;
+    }
+
+    /* Hero */
+    #hero {
+        flex-direction: column;
+        height: auto;
+        padding-top: 120px;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .hero-content {
+        order: 1;
+        margin-bottom: 2rem;
+    }
+
+    .hero-visual {
+        order: 2;
+        margin-bottom: 3rem;
+    }
+
+    .hero-cta {
+        justify-content: center;
+    }
+
+    h1 {
+        font-size: 2.8rem;
+    }
+
+    .profile-frame {
+        width: 260px;
+        height: 260px;
+    }
+
+    /* Sections */
+    #welcome {
+        padding: 60px 0;
+    }
+
+    .welcome-card {
+        padding: 2rem;
+    }
+
+    .section-title {
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Cards */
+    .portfolio-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-card {
+        padding: 2.5rem 1.5rem;
+    }
+
+    #contact,
+    #contact-hero {
+        padding-top: 100px;
+    }
+
+    .contact-item-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 2rem 1rem;
+    }
+
+    /* 3D Gallery */
+    #gallery-container {
+        height: 450px;
+    }
+
+    /* Hide custom cursor on touch */
+    .cursor,
+    .cursor-follower {
+        display: none !important;
+    }
+
+    /* Timeline */
     .timeline-item {
         flex-direction: column;
         margin-left: 30px;
         padding: 1.5rem;
+    }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2.2rem;
+    }
+
+    .profile-frame {
+        width: 220px;
+        height: 220px;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .hero-cta {
+        flex-direction: column;
+    }
+
+    nav {
+        padding: 1rem 5%;
+    }
+
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    .loader-text {
+        font-size: 2rem;
+    }
+
+    #launch-btn {
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+    }
+
+    .work-card {
+        margin-bottom: 1rem;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+    }
+
+    .portfolio-grid {
+        gap: 1rem;
+    }
+
+    .timeline-item {
+        margin-left: 20px;
     }
 }
