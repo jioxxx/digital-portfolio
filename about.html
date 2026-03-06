@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me | Princess Jhanna Dagpin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+
+<body>
+    <div id="loader">
+        <div class="loader-content">
+            <div class="loader-circle"></div>
+            <span class="loader-text">JHANNA D.</span>
+        </div>
+    </div>
+
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <div id="canvas-container"></div>
+
+    <nav>
+        <div class="logo">JHANNA<span> D.</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html" class="active">About Me</a></li>
+            <li><a href="works.html">Works</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <div id="theme-toggle" class="theme-btn">
+                <span class="sun">🌞</span>
+                <span class="moon">🌙</span>
+            </div>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="about-hero">
+            <div class="container">
+                <div class="about-grid">
+                    <div class="about-visual reveal">
+                        <div class="profile-card glass">
+                            <img src="assets/about_profile.jpg" alt="Princess Jhanna Dagpin" class="about-img">
+                        </div>
+                    </div>
+                    <div class="about-content">
+                        <h1 class="reveal">About <span class="accent">Me</span></h1>
+                        <div class="glass-panel about-text-card reveal">
+                            <p>My name is <strong>Princess Jhanna Dagpin</strong>, a student from the College of Teacher
+                                Education aspiring to become a passionate and effective educator. I enjoy exploring
+                                different learning experiences that help me grow academically and personally. I am
+                                particularly interested in how technology can enhance teaching and inspire creativity,
+                                critical thinking, and responsibility in students.</p>
+                            <p>Through this portfolio, I aim to share my journey, experiences, and aspirations as a
+                                future teacher. It reflects my commitment to continuous learning and to guiding students
+                                in discovering their potential.</p>
+                            <div class="quote-box">
+                                <p>“Teaching is not just a profession—it’s a way to inspire and empower.”</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="details">
+            <div class="container">
+                <div class="profile-info glass">
+                    <div class="info-item">
+                        <span class="label">Course</span>
+                        <span class="value">BPED 2</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">College</span>
+                        <span class="value">Teacher Education</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Specialization</span>
+                        <span class="value">Technology in Education</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">JHANNA<span>D.</span></div>
+                <p>&copy; 2024 Princess Jhanna Dagpin. Future Educator.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
