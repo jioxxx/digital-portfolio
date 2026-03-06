@@ -92,14 +92,16 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2rem 5%;
+    padding: 1.5rem 5%;
     position: fixed;
     width: 100%;
     top: 0;
-    z-index: 100;
-    backdrop-filter: blur(10px);
-    background: rgba(240, 253, 250, 0.5);
+    z-index: 1000;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    background: var(--glass);
     border-bottom: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
 }
 
 .logo {
@@ -107,6 +109,7 @@ nav {
     font-weight: 800;
     letter-spacing: -1px;
     color: var(--text-primary);
+    white-space: nowrap;
 }
 
 .logo span {
@@ -409,15 +412,27 @@ h1 {
     left: 0;
     width: 100%;
     height: 100vh;
-    background: var(--mint-light);
+    background: #020617;
+    /* Dark background for starfield */
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 10000;
-    transition: opacity 0.8s ease, visibility 0.8s;
+    transition: opacity 1s ease;
+}
+
+#intro-3d {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
 }
 
 .loader-content {
+    position: relative;
+    z-index: 2;
     text-align: center;
 }
 
@@ -430,6 +445,11 @@ h1 {
     animation: spin 1s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite;
     margin-bottom: 1.5rem;
     display: inline-block;
+}
+
+.loader-circle.hide {
+    opacity: 0;
+    visibility: hidden;
 }
 
 @keyframes spin {
@@ -455,7 +475,7 @@ h1 {
     font-size: 1.2rem;
     font-weight: 800;
     letter-spacing: 2px;
-    color: var(--mint-dark);
+    color: #ffffff;
 }
 
 @keyframes spin {
@@ -581,8 +601,11 @@ h1 {
 }
 
 /* Contact Section */
-#contact {
-    padding: 100px 0;
+#contact,
+#contact-hero {
+    padding: 120px 0 80px;
+    position: relative;
+    z-index: 1;
 }
 
 .contact-card {
@@ -656,12 +679,19 @@ h1 {
     gap: 1.5rem;
     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-align: left;
+    text-decoration: none;
+    /* Remove underline for links */
 }
 
 .contact-item-card:hover {
     transform: translateY(-12px) scale(1.03);
-    background: var(--glass);
+    background: white;
     border-color: var(--mint-vibrant);
+    box-shadow: 0 20px 40px rgba(45, 212, 191, 0.2);
+}
+
+.contact-item-card.interactive {
+    cursor: pointer;
 }
 
 .item-icon {
@@ -865,16 +895,18 @@ footer {
     .nav-links {
         position: fixed;
         right: -100%;
-        top: 80px;
+        top: 0;
         flex-direction: column;
+        justify-content: center;
         background: var(--glass);
-        backdrop-filter: blur(20px);
+        backdrop-filter: blur(25px);
         width: 100%;
-        height: auto;
+        height: 100vh;
         padding: 2rem;
-        gap: 2rem;
-        transition: 0.5s;
-        border-bottom: 1px solid var(--glass-border);
+        gap: 2.5rem;
+        transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        border-bottom: none;
+        z-index: 999;
     }
 
     #menu-toggle:checked~.nav-links {
@@ -939,6 +971,11 @@ footer {
 
     .contact-card {
         padding: 2.5rem 1.5rem;
+    }
+
+    #contact,
+    #contact-hero {
+        padding-top: 100px;
     }
 
     .contact-item-card {
