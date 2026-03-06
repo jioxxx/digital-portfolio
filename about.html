@@ -4,7 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Me | Princess Jhanna Dagpin</title>
+    <title>About | Princess Jhanna Dagpin</title>
+
+    <!-- Open Graph / Pro Social Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="About Princess Jhanna | Future Educator">
+    <meta property="og:description" content="Learn more about the journey and vision of Princess Jhanna.">
+    <meta property="og:image" content="about_profile.jpg">
+    <meta name="theme-color" content="#111827">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -17,10 +25,22 @@
 
 <body>
     <div id="loader">
+        <div id="intro-3d"></div>
         <div class="loader-content">
             <div class="loader-circle"></div>
-            <span class="loader-text">JHANNA D.</span>
+            <div class="loader-ui">
+                <span class="loader-text">JHANNA D.</span>
+                <p class="loader-welcome">
+                    Welcome to my Digital Teaching Portfolio. This page presents my learning outputs and experiences in
+                    PED 105 – Technology for Teaching and Learning 1. I hope this portfolio reflects my growth,
+                    creativity, and dedication as a future educator.
+                </p>
+                <button id="launch-btn" class="btn primary">Launch Experience</button>
+                <p class="audio-note">Sound recommended 🎵</p>
+            </div>
         </div>
+        <audio id="intro-audio" src="courage.mp3" loop></audio>
+        <audio id="click-sound" src="click.mp3" preload="auto"></audio>
     </div>
 
     <div class="cursor"></div>
@@ -36,11 +56,20 @@
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html" class="active">About Me</a></li>
             <li><a href="works.html">Works</a></li>
+            <li><a href="ict-policies.html">ICT Policies &amp; Safety</a></li>
+            <li><a href="non-digital.html">Non-Digital Tools</a></li>
+            <li><a href="learning-design.html">Learning Design</a></li>
             <li><a href="contact.html">Contact</a></li>
             <li>
-                <div id="theme-toggle" class="theme-btn">
-                    <span class="sun">🌞</span>
-                    <span class="moon">🌙</span>
+                <div class="nav-controls">
+                    <div id="audio-toggle" class="control-btn mute-btn">
+                        <span class="unmuted">🔊</span>
+                        <span class="muted hide">🔇</span>
+                    </div>
+                    <div id="theme-toggle" class="control-btn theme-btn">
+                        <span class="sun">🌞</span>
+                        <span class="moon">🌙</span>
+                    </div>
                 </div>
             </li>
         </ul>
@@ -95,14 +124,27 @@
         </section>
     </main>
 
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">JHANNA<span>D.</span></div>
-                <p>&copy; 2024 Princess Jhanna Dagpin. Future Educator.</p>
-            </div>
-        </div>
     </footer>
+
+    <!-- Floating Quick Navigation (FAB) -->
+    <div class="fab-container">
+        <button class="fab-btn glass" aria-label="Quick Navigation">
+            <span class="fab-icon">+</span>
+        </button>
+        <div class="fab-menu">
+            <a href="works.html" class="fab-item glass" title="Works">📁</a>
+            <a href="about.html" class="fab-item glass" title="About">👤</a>
+            <a href="contact.html" class="fab-item glass" title="Contact">📧</a>
+        </div>
+    </div>
+
+    <!-- Image Lightbox Modal -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="Full View">
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
