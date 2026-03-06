@@ -157,14 +157,15 @@ nav {
 .nav-links li a {
     text-decoration: none;
     color: var(--text-secondary);
-    margin-left: 1.5rem;
+    margin-left: 0.9rem;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.76rem;
     transition: all 0.3s ease;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     position: relative;
     padding: 5px 0;
+    white-space: nowrap;
 }
 
 .nav-links li a:hover,
@@ -1125,4 +1126,292 @@ footer {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--mint-dark);
+}
+
+/* 3D Tilt Support */
+.work-card,
+.value-card,
+.tool-item,
+.profile-frame {
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
+}
+
+/* --- Floating Action Button (FAB) --- */
+.fab-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 15px;
+}
+
+.fab-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background: var(--mint-vibrant);
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(45, 212, 191, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.fab-container:hover .fab-btn {
+    transform: rotate(45deg);
+}
+
+.fab-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.fab-container:hover .fab-menu {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.fab-item {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    border: 1px solid var(--glass-border);
+}
+
+.fab-item:hover {
+    background: var(--mint-vibrant);
+    transform: scale(1.1);
+}
+
+/* --- Lightbox --- */
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(15px);
+}
+
+.lightbox.active {
+    display: flex;
+}
+
+.lightbox-content {
+    max-width: 90%;
+    max-height: 90%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.lightbox-content img {
+    max-width: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-close {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    color: white;
+    font-size: 3rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+/* --- Typewriter --- */
+#typewriter::after {
+    content: '|';
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+/* ================================================
+   NEW MODULE PAGES – Shared Styles
+   ================================================ */
+
+/* Accent badge for new nav items */
+.nav-links li.new-nav a {
+    color: var(--mint-vibrant);
+}
+
+.nav-links li.new-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--mint-vibrant);
+    opacity: 0.4;
+    border-radius: 5px;
+}
+
+/* Work img icon cards */
+.work-img {
+    height: 160px;
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
+}
+
+/* ================================================
+   TIMELINE COMPONENT (learning-design.html)
+   ================================================ */
+.timeline {
+    position: relative;
+    padding: 20px 0;
+    margin-top: 30px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 24px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--mint-vibrant), var(--mint-dark));
+    opacity: 0.4;
+}
+
+.timeline-item {
+    display: flex;
+    gap: 2rem;
+    padding: 1.8rem 2rem;
+    margin-bottom: 1.5rem;
+    border-radius: 20px;
+    position: relative;
+    margin-left: 60px;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -46px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--mint-vibrant);
+    border: 3px solid var(--bg-primary);
+    box-shadow: 0 0 12px rgba(45, 212, 191, 0.6);
+    flex-shrink: 0;
+}
+
+.timeline-content h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    color: var(--text-primary);
+}
+
+.timeline-content p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+.timeline-content .tag {
+    display: inline-block;
+    margin-top: 0.8rem;
+}
+
+/* ================================================
+   RESPONSIVE – Nav overflow for many items (tablet+)
+   ================================================ */
+@media (max-width: 1024px) {
+
+    /* Show hamburger earlier on tablets with many nav items */
+    .menu-icon {
+        display: block;
+    }
+
+    .nav-links {
+        position: fixed;
+        right: -100%;
+        top: 0;
+        flex-direction: column;
+        justify-content: center;
+        background: var(--glass);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        width: 300px;
+        height: 100vh;
+        padding: 2rem;
+        gap: 1.5rem;
+        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-left: 1px solid var(--glass-border);
+        z-index: 999;
+        overflow-y: auto;
+    }
+
+    #menu-toggle:checked~.nav-links {
+        right: 0;
+    }
+
+    .nav-links li a {
+        margin-left: 0;
+        font-size: 1rem;
+        letter-spacing: 1px;
+        padding: 10px 0;
+        display: block;
+        border-bottom: 1px solid var(--glass-border);
+    }
+
+    .timeline-item {
+        margin-left: 40px;
+    }
+
+    .timeline::before {
+        left: 10px;
+    }
+
+    .timeline-dot {
+        left: -38px;
+    }
+}
+
+@media (max-width: 768px) {
+    .timeline-item {
+        flex-direction: column;
+        margin-left: 30px;
+        padding: 1.5rem;
+    }
 }
