@@ -113,6 +113,18 @@ nav {
     color: var(--mint-dark);
 }
 
+#menu-toggle {
+    display: none;
+}
+
+.menu-icon {
+    display: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-primary);
+    z-index: 101;
+}
+
 .nav-links {
     display: flex;
     align-items: center;
@@ -825,53 +837,150 @@ footer {
 @media (max-width: 992px) {
     .about-grid {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 3rem;
+        text-align: center;
+    }
+
+    .about-text-card {
+        padding: 2rem;
     }
 
     .hero-visual {
         justify-content: center;
         margin-top: 3rem;
     }
+
+    .container {
+        padding: 0 1.5rem;
+    }
 }
 
 @media (max-width: 768px) {
-    nav {
-        padding: 1rem 5%;
+
+    /* Mobile Navigation */
+    .menu-icon {
+        display: block;
+    }
+
+    .nav-links {
+        position: fixed;
+        right: -100%;
+        top: 80px;
+        flex-direction: column;
+        background: var(--glass);
+        backdrop-filter: blur(20px);
+        width: 100%;
+        height: auto;
+        padding: 2rem;
+        gap: 2rem;
+        transition: 0.5s;
+        border-bottom: 1px solid var(--glass-border);
+    }
+
+    #menu-toggle:checked~.nav-links {
+        right: 0;
     }
 
     .nav-links li a {
-        margin-left: 0.8rem;
-        font-size: 0.8rem;
+        margin-left: 0;
+        font-size: 1.1rem;
     }
 
-    .profile-frame {
-        width: 280px;
-        height: 280px;
+    /* Hero adjustments */
+    #hero {
+        flex-direction: column;
+        height: auto;
+        padding-top: 120px;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .hero-content {
+        order: 1;
+        margin-bottom: 2rem;
+    }
+
+    .hero-visual {
+        order: 2;
+        margin-bottom: 3rem;
+    }
+
+    .hero-cta {
+        justify-content: center;
     }
 
     h1 {
         font-size: 2.8rem;
     }
 
-    .contact-card {
-        padding: 2.5rem;
+    .profile-frame {
+        width: 260px;
+        height: 260px;
     }
 
+    /* Sections */
+    #welcome {
+        padding: 60px 0;
+    }
+
+    .welcome-card {
+        padding: 2rem;
+    }
+
+    .section-title {
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Cards */
+    .portfolio-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-card {
+        padding: 2.5rem 1.5rem;
+    }
+
+    .contact-item-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 2rem 1rem;
+    }
+
+    /* 3D Gallery fix */
     #gallery-container {
-        height: 400px;
+        height: 450px;
     }
 
     .cursor,
     .cursor-follower {
         display: none !important;
     }
+}
 
-    /* Disable custom cursor on touch */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2.22rem;
+    }
+
+    .profile-frame {
+        width: 220px;
+        height: 220px;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .hero-cta {
+        flex-direction: column;
+    }
 }
 
 /* Scrollbar Styling */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -885,26 +994,4 @@ footer {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--mint-dark);
-}
-
-@media (max-width: 768px) {
-    #hero {
-        flex-direction: column;
-        justify-content: center;
-        text-align: center;
-        height: auto;
-        padding-top: 100px;
-    }
-
-    .hero-cta {
-        justify-content: center;
-    }
-
-    .hero-visual {
-        margin-top: 4rem;
-    }
-
-    .welcome-card {
-        padding: 2rem;
-    }
 }
