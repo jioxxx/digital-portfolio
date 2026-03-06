@@ -227,9 +227,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         window.addEventListener('mousedown', (e) => onIntroTap(e.clientX, e.clientY));
         window.addEventListener('touchstart', (e) => {
-            e.preventDefault();
             onIntroTap(e.touches[0].clientX, e.touches[0].clientY);
-        }, { passive: false });
+        }, { passive: true });
         window.addEventListener('mousemove', (e) => hoverGravity(e.clientX, e.clientY));
 
         let speed = 0.8;
@@ -650,9 +649,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             window.addEventListener('mousedown', (e) => onTap(e.clientX, e.clientY));
             window.addEventListener('touchstart', (e) => {
-                e.preventDefault();
                 onTap(e.touches[0].clientX, e.touches[0].clientY);
-            }, { passive: false });
+            }, { passive: true });
             window.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
 
             // Background Speed & Reactive Logic
