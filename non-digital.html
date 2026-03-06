@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Non-Digital Teaching Tools | Princess Jhanna Dagpin</title>
+    <meta name="description"
+        content="Non-Digital Teaching Tools learning outputs - Digital Teaching Portfolio of Princess Jhanna.">
+    <meta name="theme-color" content="#111827">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+
+<body>
+    <div id="loader">
+        <div id="intro-3d"></div>
+        <div class="loader-content">
+            <div class="loader-circle"></div>
+            <div class="loader-ui">
+                <span class="loader-text">TEACHING TOOLS</span>
+                <p class="loader-welcome">Exploring the power of non-digital approaches in modern education.</p>
+                <button id="launch-btn" class="btn primary">View Module</button>
+            </div>
+        </div>
+        <audio id="intro-audio" src="courage.mp3" loop></audio>
+        <audio id="click-sound" src="click.mp3" preload="auto"></audio>
+    </div>
+
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+    <div id="canvas-container"></div>
+
+    <nav>
+        <div class="logo">JHANNA<span> D.</span></div>
+        <input type="checkbox" id="menu-toggle">
+        <label for="menu-toggle" class="menu-icon">&#9776;</label>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Me</a></li>
+            <li><a href="works.html">Works</a></li>
+            <li><a href="ict-policies.html">ICT Policies &amp; Safety</a></li>
+            <li><a href="non-digital.html" class="active">Non-Digital Tools</a></li>
+            <li><a href="learning-design.html">Learning Design</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li>
+                <div class="nav-controls">
+                    <div id="audio-toggle" class="control-btn mute-btn">
+                        <span class="unmuted">🔊</span><span class="muted hide">🔇</span>
+                    </div>
+                    <div id="theme-toggle" class="control-btn theme-btn">
+                        <span class="sun">🌞</span><span class="moon">🌙</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="nd-hero" style="padding: 140px 0 60px;">
+            <div class="container">
+                <h1 class="reveal text-center">Non-Digital <span class="accent">Teaching Tools</span></h1>
+                <p class="section-subtitle reveal text-center">Discovering creativity beyond the screen.</p>
+            </div>
+        </section>
+
+        <section id="nd-content" style="padding: 0 0 100px;">
+            <div class="container">
+                <div class="portfolio-grid">
+
+                    <div class="work-card glass reveal">
+                        <div class="work-img"
+                            style="background: linear-gradient(135deg, #2dd4bf22, #a855f722); display:flex; align-items:center; justify-content:center; font-size: 3rem;">
+                            📌</div>
+                        <div class="work-info">
+                            <h3>Bulletin Boards</h3>
+                            <p>Designing interactive and visually engaging bulletin boards as effective instructional
+                                displays for classroom learning.</p>
+                            <span class="tag">Visual Aid</span>
+                        </div>
+                    </div>
+
+                    <div class="work-card glass reveal">
+                        <div class="work-img"
+                            style="background: linear-gradient(135deg, #3b82f622, #ec489922); display:flex; align-items:center; justify-content:center; font-size: 3rem;">
+                            📖</div>
+                        <div class="work-info">
+                            <h3>Printed Materials & Modules</h3>
+                            <p>Developing structured, self-paced printed learning modules that cater to students without
+                                internet access.</p>
+                            <span class="tag">Print Media</span>
+                        </div>
+                    </div>
+
+                    <div class="work-card glass reveal">
+                        <div class="work-img"
+                            style="background: linear-gradient(135deg, #facc1522, #2dd4bf22); display:flex; align-items:center; justify-content:center; font-size: 3rem;">
+                            ✂️</div>
+                        <div class="work-info">
+                            <h3>Cut-Out & Activity Sheets</h3>
+                            <p>Creating hands-on activity sheets and manipulatives that encourage kinesthetic and
+                                collaborative learning experiences.</p>
+                            <span class="tag">Hands-On</span>
+                        </div>
+                    </div>
+
+                    <div class="work-card glass reveal">
+                        <div class="work-img"
+                            style="background: linear-gradient(135deg, #a855f722, #facc1522); display:flex; align-items:center; justify-content:center; font-size: 3rem;">
+                            🎨</div>
+                        <div class="work-info">
+                            <h3>Art-Based Learning</h3>
+                            <p>Using charts, diagrams, illustrations, and student-made artwork as powerful anchors for
+                                understanding concepts in MAPEH.</p>
+                            <span class="tag">Creative Arts</span>
+                        </div>
+                    </div>
+
+                    <div class="work-card glass reveal">
+                        <div class="work-img"
+                            style="background: linear-gradient(135deg, #ec489922, #3b82f622); display:flex; align-items:center; justify-content:center; font-size: 3rem;">
+                            🃏</div>
+                        <div class="work-info">
+                            <h3>Flashcards & Vocabulary Tools</h3>
+                            <p>Designing portable, reusable flashcard sets for vocabulary drills, concept review, and
+                                peer-to-peer learning games.</p>
+                            <span class="tag">Literacy</span>
+                        </div>
+                    </div>
+
+                    <div class="work-card glass reveal">
+                        <div class="work-img"
+                            style="background: linear-gradient(135deg, #2dd4bf22, #facc1522); display:flex; align-items:center; justify-content:center; font-size: 3rem;">
+                            🎭</div>
+                        <div class="work-info">
+                            <h3>Role-Playing & Simulations</h3>
+                            <p>Orchestrating classroom role-plays and simulations that mirror real-world scenarios,
+                                deepening student empathy and critical thinking.</p>
+                            <span class="tag">Experiential</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">JHANNA<span> D.</span></div>
+                <p>&copy; 2026 Princess Jhanna Dagpin. Future Educator.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- FAB -->
+    <div class="fab-container">
+        <button class="fab-btn glass" aria-label="Quick Navigation"><span class="fab-icon">+</span></button>
+        <div class="fab-menu">
+            <a href="works.html" class="fab-item glass" title="Works">📁</a>
+            <a href="about.html" class="fab-item glass" title="About">👤</a>
+            <a href="contact.html" class="fab-item glass" title="Contact">📧</a>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="Full View">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

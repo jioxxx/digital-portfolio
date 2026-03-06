@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flexible Learning Design & Reflection | Princess Jhanna Dagpin</title>
+    <meta name="description"
+        content="Flexible Learning Design and Reflection - Digital Teaching Portfolio of Princess Jhanna.">
+    <meta name="theme-color" content="#111827">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+
+<body>
+    <div id="loader">
+        <div id="intro-3d"></div>
+        <div class="loader-content">
+            <div class="loader-circle"></div>
+            <div class="loader-ui">
+                <span class="loader-text">LEARNING DESIGN</span>
+                <p class="loader-welcome">Building adaptive learning pathways for every student.</p>
+                <button id="launch-btn" class="btn primary">View Module</button>
+            </div>
+        </div>
+        <audio id="intro-audio" src="courage.mp3" loop></audio>
+        <audio id="click-sound" src="click.mp3" preload="auto"></audio>
+    </div>
+
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+    <div id="canvas-container"></div>
+
+    <nav>
+        <div class="logo">JHANNA<span> D.</span></div>
+        <input type="checkbox" id="menu-toggle">
+        <label for="menu-toggle" class="menu-icon">&#9776;</label>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Me</a></li>
+            <li><a href="works.html">Works</a></li>
+            <li><a href="ict-policies.html">ICT Policies &amp; Safety</a></li>
+            <li><a href="non-digital.html">Non-Digital Tools</a></li>
+            <li><a href="learning-design.html" class="active">Learning Design</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li>
+                <div class="nav-controls">
+                    <div id="audio-toggle" class="control-btn mute-btn">
+                        <span class="unmuted">🔊</span><span class="muted hide">🔇</span>
+                    </div>
+                    <div id="theme-toggle" class="control-btn theme-btn">
+                        <span class="sun">🌞</span><span class="moon">🌙</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="ld-hero" style="padding: 140px 0 60px;">
+            <div class="container">
+                <h1 class="reveal text-center">Flexible Learning <span class="accent">Design & Reflection</span></h1>
+                <p class="section-subtitle reveal text-center">Designing adaptive, student-centered pathways for
+                    meaningful learning.</p>
+            </div>
+        </section>
+
+        <section id="ld-content" style="padding: 0 0 80px;">
+            <div class="container">
+
+                <!-- Reflection Timeline -->
+                <h2 class="section-title reveal">Personal <span class="accent">Reflections</span></h2>
+                <div class="timeline reveal">
+                    <div class="timeline-item glass">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h3>Module 1 – Introduction to Flexible Learning</h3>
+                            <p>I discovered that flexible learning is not just about technology — it is about designing
+                                pathways that reach every learner, regardless of their environment or resources. This
+                                opened my eyes to the true meaning of inclusive education.</p>
+                            <span class="tag">Week 1</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item glass">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h3>Module 2 – Instructional Design Principles</h3>
+                            <p>Applying backward design principles helped me understand that we must begin with the end
+                                in mind. I practiced crafting learning outcomes before planning activities, which
+                                strengthened my lesson planning skills.</p>
+                            <span class="tag">Week 2</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item glass">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h3>Module 3 – Blended & Hybrid Approaches</h3>
+                            <p>I explored the balance between synchronous and asynchronous learning. Designing a blended
+                                plan for a MAPEH lesson taught me how to leverage both digital and non-digital
+                                modalities effectively.</p>
+                            <span class="tag">Week 3</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item glass">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h3>Module 4 – Assessing in a Flexible Context</h3>
+                            <p>Rethinking assessment beyond traditional tests was challenging but rewarding. I designed
+                                portfolio-based and performance-based assessments that honor diverse learner strengths
+                                and allow for authentic demonstration of skills.</p>
+                            <span class="tag">Week 4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Design Showcase -->
+                <h2 class="section-title reveal" style="margin-top: 80px;">Learning <span class="accent">Design
+                        Outputs</span></h2>
+                <div class="portfolio-grid" style="margin-top: 30px;">
+                    <div class="work-card glass reveal">
+                        <div class="work-img"
+                            style="background: linear-gradient(135deg, #2dd4bf33, #3b82f633); display:flex; align-items:center; justify-content:center; font-size:3rem;">
+                            🗺️</div>
+                        <div class="work-info">
+                            <h3>Curriculum Map</h3>
+                            <p>A structured semester map aligning learning outcomes, activities, and flexible delivery
+                                modes across all PED 105 modules.</p>
+                            <span class="tag">Planning</span>
+                        </div>
+                    </div>
+                    <div class="work-card glass reveal">
+                        <div class="work-img"
+                            style="background: linear-gradient(135deg, #a855f733, #ec489933); display:flex; align-items:center; justify-content:center; font-size:3rem;">
+                            📝</div>
+                        <div class="work-info">
+                            <h3>Lesson Plans (Flexible Format)</h3>
+                            <p>Developed detailed lesson plans with embedded alternative delivery strategies to
+                                accommodate both online and offline learners.</p>
+                            <span class="tag">Instruction</span>
+                        </div>
+                    </div>
+                    <div class="work-card glass reveal">
+                        <div class="work-img"
+                            style="background: linear-gradient(135deg, #facc1533, #2dd4bf33); display:flex; align-items:center; justify-content:center; font-size:3rem;">
+                            📊</div>
+                        <div class="work-info">
+                            <h3>Rubrics & Assessment Tools</h3>
+                            <p>Crafted performance-based rubrics aligned with DepEd's competency standards and flexible
+                                assessment guidelines.</p>
+                            <span class="tag">Assessment</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Takeaway -->
+                <div class="quote-box glass reveal"
+                    style="margin-top: 60px; padding: 2.5rem 3rem; border-radius: 24px; border-left: 5px solid var(--mint-vibrant);">
+                    <p style="font-size: 1.2rem; color: var(--text-secondary); line-height: 1.8;">"Flexible learning is
+                        not about lowering standards — it is about removing barriers. As a future educator, my mission
+                        is to design experiences where no student is left behind, regardless of geography, connectivity,
+                        or circumstance."</p>
+                    <p style="margin-top: 1rem; font-weight: 700; color: var(--mint-vibrant);">— Princess Jhanna Dagpin,
+                        BPED 2</p>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">JHANNA<span> D.</span></div>
+                <p>&copy; 2026 Princess Jhanna Dagpin. Future Educator.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- FAB -->
+    <div class="fab-container">
+        <button class="fab-btn glass" aria-label="Quick Navigation"><span class="fab-icon">+</span></button>
+        <div class="fab-menu">
+            <a href="works.html" class="fab-item glass" title="Works">📁</a>
+            <a href="about.html" class="fab-item glass" title="About">👤</a>
+            <a href="contact.html" class="fab-item glass" title="Contact">📧</a>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="Full View">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

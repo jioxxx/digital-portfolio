@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICT Policies & Safety | Princess Jhanna Dagpin</title>
+    <meta name="description"
+        content="ICT Policies and Safety learning outputs - Digital Teaching Portfolio of Princess Jhanna.">
+    <meta name="theme-color" content="#111827">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+
+<body>
+    <div id="loader">
+        <div id="intro-3d"></div>
+        <div class="loader-content">
+            <div class="loader-circle"></div>
+            <div class="loader-ui">
+                <span class="loader-text">ICT SAFETY</span>
+                <p class="loader-welcome">Ensuring a safe and ethical digital environment for every learner.</p>
+                <button id="launch-btn" class="btn primary">View Module</button>
+            </div>
+        </div>
+        <audio id="intro-audio" src="courage.mp3" loop></audio>
+        <audio id="click-sound" src="click.mp3" preload="auto"></audio>
+    </div>
+
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+    <div id="canvas-container"></div>
+
+    <nav>
+        <div class="logo">JHANNA<span> D.</span></div>
+        <input type="checkbox" id="menu-toggle">
+        <label for="menu-toggle" class="menu-icon">&#9776;</label>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Me</a></li>
+            <li><a href="works.html">Works</a></li>
+            <li><a href="ict-policies.html" class="active">ICT Policies &amp; Safety</a></li>
+            <li><a href="non-digital.html">Non-Digital Tools</a></li>
+            <li><a href="learning-design.html">Learning Design</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li>
+                <div class="nav-controls">
+                    <div id="audio-toggle" class="control-btn mute-btn">
+                        <span class="unmuted">🔊</span><span class="muted hide">🔇</span>
+                    </div>
+                    <div id="theme-toggle" class="control-btn theme-btn">
+                        <span class="sun">🌞</span><span class="moon">🌙</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="ict-hero" style="padding: 140px 0 60px;">
+            <div class="container">
+                <h1 class="reveal text-center">ICT Policies and <span class="accent">Safety</span></h1>
+                <p class="section-subtitle reveal text-center">Responsible digital citizenship in the modern classroom.
+                </p>
+            </div>
+        </section>
+
+        <section id="ict-content" style="padding: 0 0 100px;">
+            <div class="container">
+                <div class="portfolio-grid">
+
+                    <div class="work-card glass reveal">
+                        <div class="work-img"
+                            style="background: linear-gradient(135deg, #2dd4bf22, #3b82f622); display:flex; align-items:center; justify-content:center; font-size: 3rem;">
+                            🔒</div>
+                        <div class="work-info">
+                            <h3>Data Privacy Act (RA 10173)</h3>
+                            <p>Understanding the Philippine Data Privacy Act and its implications for schools handling
+                                student information, records, and digital identities.</p>
+                            <span class="tag">Legislation</span>
+                        </div>
+                    </div>
+
+                    <div class="work-card glass reveal">
+                        <div class="work-img"
+                            style="background: linear-gradient(135deg, #ec489922, #a855f722); display:flex; align-items:center; justify-content:center; font-size: 3rem;">
+                            🛡️</div>
+                        <div class="work-info">
+                            <h3>Cybercrime Prevention Act (RA 10175)</h3>
+                            <p>Exploring key provisions of RA 10175 including cyberbullying, online libel, and illegal
+                                access — and how educators can guide students toward safe online behavior.</p>
+                            <span class="tag">Cybersecurity</span>
+                        </div>
+                    </div>
+
+                    <div class="work-card glass reveal">
+                        <div class="work-img"
+                            style="background: linear-gradient(135deg, #facc1522, #2dd4bf22); display:flex; align-items:center; justify-content:center; font-size: 3rem;">
+                            📚</div>
+                        <div class="work-info">
+                            <h3>Digital Citizenship in Education</h3>
+                            <p>Integrating the nine elements of digital citizenship into classroom practice — from
+                                digital literacy and communication to digital rights and responsibilities.</p>
+                            <span class="tag">Digital Citizenship</span>
+                        </div>
+                    </div>
+
+                    <div class="work-card glass reveal">
+                        <div class="work-img"
+                            style="background: linear-gradient(135deg, #3b82f622, #facc1522); display:flex; align-items:center; justify-content:center; font-size: 3rem;">
+                            📵</div>
+                        <div class="work-info">
+                            <h3>Responsible Social Media Use</h3>
+                            <p>Crafting classroom guidelines for responsible social media use, digital footprints, and
+                                navigating the ethical dimensions of online platforms in education.</p>
+                            <span class="tag">Social Media</span>
+                        </div>
+                    </div>
+
+                    <div class="work-card glass reveal">
+                        <div class="work-img"
+                            style="background: linear-gradient(135deg, #a855f722, #ec489922); display:flex; align-items:center; justify-content:center; font-size: 3rem;">
+                            ⚠️</div>
+                        <div class="work-info">
+                            <h3>Online Threats & Prevention</h3>
+                            <p>Identifying major online threats — phishing, grooming, misinformation — and developing
+                                age-appropriate prevention strategies for K-12 learners.</p>
+                            <span class="tag">Safety</span>
+                        </div>
+                    </div>
+
+                    <div class="work-card glass reveal">
+                        <div class="work-img"
+                            style="background: linear-gradient(135deg, #2dd4bf22, #a855f722); display:flex; align-items:center; justify-content:center; font-size: 3rem;">
+                            ✅</div>
+                        <div class="work-info">
+                            <h3>School ICT Policies & CHED Guidelines</h3>
+                            <p>Reviewing DepEd Order No. 40, s. 2012 and CHED memoranda to understand how national
+                                policies govern ICT integration and ethical standards in Philippine education.</p>
+                            <span class="tag">Policy</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Reflection -->
+                <div class="quote-box glass reveal"
+                    style="margin-top: 60px; padding: 2.5rem 3rem; border-radius: 24px; border-left: 5px solid var(--mint-vibrant);">
+                    <p style="font-size: 1.2rem; color: var(--text-secondary); line-height: 1.8;">"As a future educator,
+                        I believe my responsibility does not end at the classroom wall. In the digital age, I am also a
+                        guardian of my students' safety online — teaching them not just how to use technology, but how
+                        to use it wisely, ethically, and safely."</p>
+                    <p style="margin-top: 1rem; font-weight: 700; color: var(--mint-vibrant);">— Princess Jhanna Dagpin,
+                        BPED 2</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">JHANNA<span> D.</span></div>
+                <p>&copy; 2026 Princess Jhanna Dagpin. Future Educator.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- FAB -->
+    <div class="fab-container">
+        <button class="fab-btn glass" aria-label="Quick Navigation"><span class="fab-icon">+</span></button>
+        <div class="fab-menu">
+            <a href="works.html" class="fab-item glass" title="Works">📁</a>
+            <a href="about.html" class="fab-item glass" title="About">👤</a>
+            <a href="contact.html" class="fab-item glass" title="Contact">📧</a>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="Full View">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
