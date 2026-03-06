@@ -111,23 +111,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
         camera.position.z = 25;
 
-        // Interaction Logic for Intro - COLLAPSE Physics
+        // Interaction Logic for Intro 3D Experience
         const raycaster = new THREE.Raycaster();
         const pMouse = new THREE.Vector2(-100, -100);
 
-        const collapseParticles = (x, y) => {
+        // Color palette for single-tap cycle
+        const introColors = [
+            new THREE.Color(0x5eead4), // mint
+            new THREE.Color(0xec4899), // pink
+            new THREE.Color(0xa855f7), // purple
+            new THREE.Color(0x3b82f6), // blue
+            new THREE.Color(0xfacc15), // gold
+            new THREE.Color(0xf97316), // orange
+            new THREE.Color(0x10b981), // emerald
+        ];
+        let introColorIdx = 0;
+        let lastIntroTap = 0;
+
+        // Single tap: pull particles toward touch + cycle color
+        const pullParticles = (x, y) => {
             pMouse.x = (x / window.innerWidth) * 2 - 1;
             pMouse.y = -(y / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(pMouse, camera);
             const ray = raycaster.ray;
-
             const posAttr = particlesGeo.attributes.position;
             for (let i = 0; i < particlesCount; i++) {
                 const pVec = new THREE.Vector3(posAttr.getX(i), posAttr.getY(i), posAttr.getZ(i));
-                const dist = ray.distanceToPoint(pVec);
-
-                if (dist < 5.0) {
-                    const dir = ray.origin.clone().sub(pVec).normalize(); // Pull TOWARD mouse
+                if (ray.distanceToPoint(pVec) < 5.0) {
+                    const dir = ray.origin.clone().sub(pVec).normalize();
                     velocities[i * 3] += dir.x * 2.5;
                     velocities[i * 3 + 1] += dir.y * 2.5;
                     velocities[i * 3 + 2] += dir.z * 2.5;
@@ -135,8 +146,91 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        window.addEventListener('mousedown', (e) => collapseParticles(e.clientX, e.clientY));
-        window.addEventListener('touchstart', (e) => collapseParticles(e.touches[0].clientX, e.touches[0].clientY));
+        // Double-tap: ALL particles collapse to center then explode back
+        const collapseAll = () => {
+            const posAttr = particlesGeo.attributes.position;
+            for (let i = 0; i < particlesCount; i++) {
+                const cx = posAttr.getX(i);
+                const cy = posAttr.getY(i);
+                const cz = posAttr.getZ(i);
+                const dist = Math.sqrt(cx * cx + cy * cy + cz * cz);
+                const force = Math.max(15 / (dist + 0.1), 1.5);
+                // Drive toward center (0,0,z plane)
+                velocities[i * 3] += (-cx / (dist + 1)) * force;
+                velocities[i * 3 + 1] += (-cy / (dist + 1)) * force;
+            }
+
+            // After 0.5s, fire all particles outward (supernova)
+            setTimeout(() => {
+                for (let i = 0; i < particlesCount; i++) {
+                    const cx = posAttr.getX(i);
+                    const cy = posAttr.getY(i);
+                    const cz = posAttr.getZ(i);
+                    const dist = Math.sqrt(cx * cx + cy * cy) + 0.01;
+                    velocities[i * 3] += (cx / dist) * 3;
+                    velocities[i * 3 + 1] += (cy / dist) * 3;
+                    velocities[i * 3 + 2] += (Math.random() - 0.5) * 2;
+                }
+            }, 500);
+        };
+
+        // Cycle through neon colors with a flash
+        const cycleIntroColor = () => {
+            introColorIdx = (introColorIdx + 1) % introColors.length;
+            const c = introColors[introColorIdx];
+            gsap.to(particlesMat.color, {
+                r: c.r, g: c.g, b: c.b,
+                duration: 0.4,
+                ease: 'power2.out'
+            });
+            // Flash opacity for tactile feedback
+            gsap.fromTo(particlesMat, { opacity: 1 }, {
+                opacity: 0.1,
+                duration: 0.1,
+                yoyo: true,
+                repeat: 1,
+                onComplete: () => { particlesMat.opacity = 0.9; }
+            });
+        };
+
+        // Gentle hover gravity on mousemove
+        const hoverGravity = (x, y) => {
+            pMouse.x = (x / window.innerWidth) * 2 - 1;
+            pMouse.y = -(y / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(pMouse, camera);
+            const ray = raycaster.ray;
+            const posAttr = particlesGeo.attributes.position;
+            for (let i = 0; i < particlesCount; i++) {
+                const pVec = new THREE.Vector3(posAttr.getX(i), posAttr.getY(i), posAttr.getZ(i));
+                if (ray.distanceToPoint(pVec) < 3.0) {
+                    const dir = ray.origin.clone().sub(pVec).normalize();
+                    velocities[i * 3] += dir.x * 0.12;
+                    velocities[i * 3 + 1] += dir.y * 0.12;
+                    velocities[i * 3 + 2] += dir.z * 0.12;
+                }
+            }
+        };
+
+        // Unified tap/click handler
+        const onIntroTap = (x, y) => {
+            const now = Date.now();
+            if (now - lastIntroTap < 350) {
+                // DOUBLE TAP — collapse & supernova
+                collapseAll();
+            } else {
+                // SINGLE TAP — pull + color change
+                pullParticles(x, y);
+                cycleIntroColor();
+            }
+            lastIntroTap = now;
+        };
+
+        window.addEventListener('mousedown', (e) => onIntroTap(e.clientX, e.clientY));
+        window.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            onIntroTap(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: false });
+        window.addEventListener('mousemove', (e) => hoverGravity(e.clientX, e.clientY));
 
         let speed = 0.8;
         let frameCount = 0;
@@ -160,7 +254,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const posAttr = particlesGeo.attributes.position;
             for (let i = 0; i < particlesCount; i++) {
-                // Apply velocities
                 posAttr.setX(i, posAttr.getX(i) + velocities[i * 3]);
                 posAttr.setY(i, posAttr.getY(i) + velocities[i * 3 + 1]);
                 posAttr.setZ(i, posAttr.getZ(i) + velocities[i * 3 + 2]);
@@ -186,7 +279,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
-                console.log("Renderer resized.");
             }
         });
     };
