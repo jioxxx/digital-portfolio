@@ -4,7 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Me | Princess Jhanna Dagpin</title>
+    <title>Contact | Princess Jhanna Dagpin</title>
+
+    <!-- Open Graph / Pro Social Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Contact Princess Jhanna | Future Educator">
+    <meta property="og:description" content="Reach out to Princess Jhanna Dagpin for collaborations or inquiries.">
+    <meta property="og:image" content="profile.jpg">
+    <meta name="theme-color" content="#111827">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -48,6 +56,9 @@
             <li><a href="index.html">Home</a></li>
             <li><a href="about.html">About Me</a></li>
             <li><a href="works.html">Works</a></li>
+            <li><a href="ict-policies.html">ICT Policies &amp; Safety</a></li>
+            <li><a href="non-digital.html">Non-Digital Tools</a></li>
+            <li><a href="learning-design.html">Learning Design</a></li>
             <li><a href="contact.html" class="active">Contact</a></li>
             <li>
                 <div class="nav-controls">
@@ -117,14 +128,27 @@
         </section>
     </main>
 
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">JHANNA<span> D.</span></div>
-                <p>&copy; 2026 Princess Jhanna Dagpin. Future Educator.</p>
-            </div>
-        </div>
     </footer>
+
+    <!-- Floating Quick Navigation (FAB) -->
+    <div class="fab-container">
+        <button class="fab-btn glass" aria-label="Quick Navigation">
+            <span class="fab-icon">+</span>
+        </button>
+        <div class="fab-menu">
+            <a href="works.html" class="fab-item glass" title="Works">📁</a>
+            <a href="about.html" class="fab-item glass" title="About">👤</a>
+            <a href="contact.html" class="fab-item glass" title="Contact">📧</a>
+        </div>
+    </div>
+
+    <!-- Image Lightbox Modal -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="Full View">
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
