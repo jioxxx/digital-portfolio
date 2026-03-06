@@ -31,6 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Theme switched to:", newTheme);
     });
 
+    // Mobile Menu Auto-close
+    const menuToggle = document.getElementById('menu-toggle');
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (menuToggle) menuToggle.checked = false;
+        });
+    });
+
     // --- 3. Custom Cursor (Desktop Only) ---
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
 
@@ -186,6 +194,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     px = e.clientX; py = e.clientY;
                 }
             });
+
+            // Touch Support
+            gall.addEventListener('touchstart', (e) => {
+                drag = true;
+                px = e.touches[0].clientX;
+                py = e.touches[0].clientY;
+            }, { passive: false });
+            window.addEventListener('touchend', () => drag = false);
+            window.addEventListener('touchmove', (e) => {
+                if (drag) {
+                    e.preventDefault();
+                    targetX += (e.touches[0].clientX - px) * 0.008;
+                    targetY += (e.touches[0].clientY - py) * 0.008;
+                    px = e.touches[0].clientX;
+                    py = e.touches[0].clientY;
+                }
+            }, { passive: false });
+
             gall.addEventListener('wheel', (e) => {
                 e.preventDefault();
                 targetZoom = Math.max(15, Math.min(45, targetZoom + e.deltaY * 0.02));
